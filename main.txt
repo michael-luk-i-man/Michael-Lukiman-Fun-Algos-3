@@ -1,0 +1,109 @@
+Amir Shpilka
+Michael Lukiman
+Siddarth Krishna
+Sanyam Kapoor
+
+HW3
+
+1)
+def Tromino(n):
+	// trom1 = 1-tromino;
+	megatrom = duplicate(trom1, n)
+	cross_diagonals = cross_diagonalize(trom1, n)
+	main_diagonal = double_diagonalize(megatrom, n)
+filler = back_to_back_rotation(trom1, n)
+	main-diagonal = glue(main_diagonal, trom1)
+	glue_all = glue(glue(main_diagonal, cross_diagonals), filler)
+
+def double_diagonalize(megatrom, n): # recursion here
+	glue(megatrom, duplicate(megatrom))
+	if n is not 1:
+			n = 2^n - (n-1)
+		megatrom = double_diagonalize(megatrom, n)
+
+def back_to_back_rotation_double(megatrom, n): # recursion here
+	n = n - 1
+megatrom = glue(megatrom, duplicate(megatrom))
+back_to_back_rotation_double(megatrom, n)
+		
+def cross_diagonalize(megatrom):
+megatrom = double_diagonalize(megatrom)
+
+	  b) Number of calls T(n) is:
+1 + 1 + 2 (main function) +
+2 log n (double diagonalize for main diagonal) +
+2 log n (double diagonalize for cross diagonal) +
+2 n (back_to_back_rotation for fillers) 
+Therefore dominated by Theta((2)n). 
+Reminder that n is in 2n x 2n, so relation of n is quite good compared to size of tromino. 
+
+
+2) 
+If already sorted (and then rotated) from lowest value leftmost and highest value rightmost then there exists at all times only one “pivot” where the correctly formatted array begins. 
+Therefore, the only point where A[i] > A[i+1] is when A[i+1] is the pivot of sorted array B[..]. This is a distinct element, even if the array has repeating values. Using a stable cycling, this one stable element can only be in the lower or upper half of the array at any given time. The rest of the array, assuming B[0 . . .(n − 1)] is the sorted version of A, is then sorted by this proof. I believe this conveys the same concreteness as mathematical notation, which I am unfamiliar with, but would like to learn. 
+	
+       b)    found = false
+find_the_little_guy(A):
+n = A.length
+if n > 1:
+		A_L = A[0,(n/2)-1]
+		A_R = A[n/2,n]
+if A_R[0] > A_L[0]:
+find_the_little_guy(A_L)
+if found = false:
+find_the_little_guy(A_R) # will only run after conquering through the first half with no results
+else: 
+	found = true
+return A_R[0]
+			return A[0]
+
+	
+Will return the ultimate minimum through recursion, similar to binary search but with a different goal. Since the algorithm divides each time by a factor of two, but may have to run through both halves each time if the lowest in each stage, worst case is Theta(2 log (n-1)), while the best case is Theta(1) if the pivot is the exact center-right of A (even length). Again, we assume A is rotation sorted and already shifted. The base case compares two numbers to find a transposition, as a nobase case. Then, the function collapses to return that value if it finds one. 
+
+3) 	found = false
+	current = inf
+find_the_local_little_guy(A):
+n = A.length
+if n > 2: # assuming n even, else just with ceils and floors
+fulcrum = n/2
+	if A[fulcrum+1] > A[fulcrum]:
+		min = A[fulcrum]
+		A_L = A[n,fulcrum]
+		find_the_local_little_guy(A_L)	
+else: 
+	min = A[fulcrum+1]
+	A_R = A[fulcrum+1,n]
+		find_the_local_little_guy(A_R)
+	if min < current:
+		current = min
+return current
+
+Will drift to a local minimum through recursion. In the non trivial base case of two, the function will return the smallest (a minimum). By induction we can then conclude that it will always return the lowest nextdoor value until reaching some point where it sits at a local minimum, providing its correctness. This approach reaches ~O(log n) due to the halving steps. Note this does not ensure an efficient path to a global minimum, which I know is one of the big questions of today in machine learning. It simply requests and ensures a local minimum. 
+
+4) 
+This seems like the rotated array algorithm, as the cliff dropoff before the pivot is similar to a peak, indeed sharing characteristics of an ascending trend and then a descent. Except, the value we wish to find is the one on the left side before the transposition instead of the right side.  
+
+	found = false
+find_the_big_guy(A):
+n = A.length
+if n > 1:
+		A_L = A[0,(n/2)-1] # assuming n even, else just with ceils and floors
+		A_R = A[n/2,n]
+if A_R[0] > A_L[0]:
+find_the_big_guy(A_L)
+if found = false:
+find_the_big_guy(A_R) # will only run after conquering through the first half with no results
+else: 
+	found = true
+return A_L[(n/2)-1]
+		return A[0]
+
+Will return the maximum (and thus peak) through recursion, similar to binary search but with a more general goal. The base case compares two numbers to find a transposition, by induction. Then, the function collapses to return that value if it finds one. Since the algorithm divides each time by a factor of two and there is only one peak, the worst case is around Theta(log n), the best case is Theta(1) if the peak is the exact center or center-left of A.
+
+
+
+
+
+	
+	
+
